@@ -20,6 +20,8 @@ module Guard
           "Test::Unit"
         when :minitest
           "MiniTest"
+        when :fast_rspec
+          "FastRSpec"
         else
           type.to_s
         end
@@ -77,6 +79,10 @@ module Guard
           parts << "cu"
         elsif type == :minitest
           parts << "minitest"
+        elsif type == :fast_rspec
+          parts << "FastRSpec"
+        elsif type == :rspec
+          parts << "RSpec"
         end
 
         parts << "-p #{port}"
@@ -89,7 +95,7 @@ module Guard
       end
 
       def self.spork_processes_on_windows
-        result = `wmic process where "commandline like '%spork%' or commandline like '%ring_server%' or commandline like '%magazine_slave_provider%'" get commandline,handle,parentprocessid` 
+        result = `wmic process where "commandline like '%spork%' or commandline like '%ring_server%' or commandline like '%magazine_slave_provider%'" get commandline,handle,parentprocessid`
         lines = result.lines.map &:strip
         header = lines.shift
         column_sizes = header.scan(/\w+\s*/).map { |part| part.size }

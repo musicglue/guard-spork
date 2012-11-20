@@ -20,6 +20,7 @@ module Guard
         options[:aggressive_kill]  = true unless options[:aggressive_kill] == false
         options[:foreman]        ||= false
         options[:quiet]          ||= false
+        options[:test_framework] ||= nil
         @options  = options
         initialize_spork_instances
       end
@@ -50,7 +51,7 @@ module Guard
 
       def initialize_spork_instances
         @spork_instances = []
-        [:rspec, :cucumber, :test_unit, :minitest].each do |type|
+        ([options[:test_framework] || [:rspec, :cucumber, :test_unit, :minitest]]).flatten.each do |type|
           port, env = options[:"#{type}_port"], options[:"#{type}_env"]
           spork_instances << SporkInstance.new(type, port, env, :bundler => should_use?(:bundler), :foreman => should_use?(:foreman), :quiet => should_use?(:quiet)) if should_use?(type)
         end
